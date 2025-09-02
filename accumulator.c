@@ -1,7 +1,6 @@
 #include "accumulator.h"
 #include <assert.h>
 #include <openssl/sha.h>
-#include <stdatomic.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -36,7 +35,7 @@ static inline bool merkle_hash(const bytes32 *left, const bytes32 *right, bytes3
 
 static inline bool hashes_equal(const bytes32 *a, const bytes32 *b)
 {
-    if (!a || !b) return 0;
+    if (!a || !b) return false;
     return memcmp(*a, *b, SHA256_DIGEST_LENGTH) == 0;
 }
 
