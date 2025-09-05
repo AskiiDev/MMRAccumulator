@@ -49,31 +49,28 @@ The beauty is that the accumulator size grows logarithmically while supporting e
 
 ### Initialisation and destruction:
 
-- `void mmr_init(MMRAccumulator *acc)`
-Initializes an empty accumulator.
-
-- `void mmr_destroy(MMRAccumulator *acc)`
-Frees all memory associated with the accumulator.
+```c
+void mmr_init(MMRAccumulator *acc)
+void mmr_destroy(MMRAccumulator *acc)
+```
 
 ---
 
 ### Adding and removing elements:
 
-- `bool mmr_add(MMRAccumulator *acc, const uint8_t *e, size_t n)`
-Adds a new element to the accumulator.
-
-- `bool mmr_remove(MMRAccumulator *acc, const MMRWitness *proof)`;
-Removes an element from the accumulator, using a witness _(in progress)_.
+```c
+bool mmr_add(MMRAccumulator *acc, const uint8_t *e, size_t n)
+bool mmr_remove(MMRAccumulator *acc, const MMRWitness *proof)
+```
 
 ---
 
 ### Proving membership
 
-- `bool mmr_verify(const MMRAccumulator *acc, const MMRWitness *w)`
-Verifies whether an element is included in the accumulator using a witness.
-
-- `bool mmr_witness(const MMRAccumulator *acc, MMRWitness *w, const uint8_t *e, size_t n)`
-Generates a membership proof for an element, enabling third parties to verify without full state.
+```c
+bool mmr_verify(const MMRAccumulator *acc, const MMRWitness *w)
+bool mmr_witness(const MMRAccumulator *acc, MMRWitness *w, const uint8_t *e, size_t n)
+```
 
 ## Planned Features
 
