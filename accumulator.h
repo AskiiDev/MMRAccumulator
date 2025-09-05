@@ -83,7 +83,7 @@ typedef struct
  * Merkle Mountain Range accumulator for incremental set membership proofs
  * Maintains a forest of perfect binary trees in decreasing size order
  * Supports efficient addition of elements and generation of inclusion proofs
- * 
+ *
  * MEMORY MODEL:
  *  - The tracker owns all dynamically allocated memory
  *  - Callers receive pointers for convenience but must not free them
@@ -145,7 +145,7 @@ bool mmr_remove(MMRAccumulator *acc, const MMRWitness *w);
 bool mmr_verify(const MMRAccumulator *acc, const MMRWitness *w);
 
 /**
- * Create witness for element in MMR accumulator  
+ * Create witness for element in MMR accumulator
  * Generates a Merkle inclusion proof by collecting sibling hashes along
  * the path from the element's leaf node to a root node
  * MEMORY OWNERSHIP: The generated witness contains a siblings array that is

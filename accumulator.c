@@ -652,7 +652,7 @@ bool mmr_witness(const MMRAccumulator *acc, MMRWitness *w, const uint8_t *e, siz
 
     // If we've previously calculated a witness
     // for this node, we need to manually free it,
-    // otherwise it'll be overwritten and go untracked 
+    // otherwise it'll be overwritten and go untracked
     if (item->witness.siblings)
     {
         free(item->witness.siblings);

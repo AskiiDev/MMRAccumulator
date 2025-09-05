@@ -72,11 +72,34 @@ bool mmr_verify(const MMRAccumulator *acc, const MMRWitness *w)
 bool mmr_witness(const MMRAccumulator *acc, MMRWitness *w, const uint8_t *e, size_t n)
 ```
 
-## Planned Features
+## Planned features
 
-- **Element Removal:** Support for deletion proofs to prune old elements
-- **Persistence:** Serialise/deserialise accumulators for disk or network usage
-- **Optimizations:** Memory-efficient node storage, configurable hash functions
+### Witness caching
+
+The current implementation regenerates witnesses from scratch each time `mmr_witness()` is called. A planned optimisation will cache computed witnesses within the tracker, allowing:
+
+- Instant witness retrieval for previously computed proofs
+- Incremental witness updates when the accumulator structure changes
+
+The foundation for this feature exists in the  `MMRItem`  structure, which already stores witness data alongside each node.
+
+---
+
+### Element removal
+
+Support for deletion proofs to prune old elements from the accumulator while maintaining cryptographic integrity.
+
+---
+
+### Persistence
+
+Serialise/deserialise accumulators for disk or network usage.
+
+---
+
+### Performance and scalability
+
+Memory-efficient node storage and configurable hash functions.
 
 ---
 
