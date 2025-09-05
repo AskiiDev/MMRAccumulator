@@ -148,6 +148,7 @@ static bool mmr_tr_resize(MMRTracker *tracker)
 
 static bool mmr_tr_get(const MMRTracker *tracker, const bytes32 *hash, MMRItem **item)
 {
+    if (item) *item = NULL;
     if (!tracker || !tracker->items) return false;
 
     MMRItem *cur = tracker->items[mmr_tr_hash(hash, tracker->capacity)];
@@ -408,6 +409,7 @@ bool mmr_verify(const MMRAccumulator *acc, const MMRWitness *w)
 {
     // Tree sizes should always be powers of two
     if (!acc || !w) return false;
+    if (w->n_siblings > 0 && !w->siblings) return false;
     if (w->n_siblings > WITNESS_MAX_SIBLINGS) return false;
     if (w->path >= (1ULL << w->n_siblings)) return false;
 
@@ -528,6 +530,13 @@ bool mmr_witness(const MMRAccumulator *acc, MMRWitness *w, const uint8_t *e, siz
     }
 
     w->siblings = siblings;
+
+    if (item->witness.siblings)
+    {
+        free(item->witness.siblings);
+        item->witness.siblings = NULL;
+    }
+
     item->witness = *w;
 
     return true;
