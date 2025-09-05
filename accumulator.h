@@ -41,7 +41,7 @@ typedef struct
 
     bytes32 *siblings;
     size_t n_siblings;
-    size_t path;
+    uint64_t path;
 } MMRWitness;
 
 // -------------------------- MMR TRACKER -----------------------------------

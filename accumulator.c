@@ -212,7 +212,9 @@ static bool mmr_tr_resize(MMRTracker *tracker)
  */
 static bool mmr_tr_get(const MMRTracker *tracker, const bytes32 *hash, MMRItem **item)
 {
-    if (item) *item = NULL;
+    if (!item) return false;
+    *item = NULL;
+    
     if (!tracker || !tracker->items) return false;
 
     MMRItem *cur = tracker->items[mmr_tr_hash(hash, tracker->capacity)];
@@ -473,7 +475,7 @@ bool mmr_add(MMRAccumulator *acc, const uint8_t *e, size_t n)
     {
         MMRNode *next = (*cur)->next;
         MMRNode *parent;
-        if (!merge_nodes(&acc->tracker, node, *cur, &parent))
+        if (!merge_nodes(&acc->tracker, *cur, node, &parent))
         {
             return false;
         }
