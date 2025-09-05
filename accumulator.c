@@ -217,6 +217,7 @@ static bool mmr_tr_insert(MMRTracker *tracker, MMRNode *node)
     item->node = node;
     item->next = NULL;
     memset(&item->witness, 0, sizeof(MMRWitness));
+    item->witness.siblings = NULL;
 
     size_t key = mmr_tr_hash(&node->hash, tracker->capacity);
     if (!tracker->items[key])
@@ -245,7 +246,7 @@ static bool mmr_tr_insert(MMRTracker *tracker, MMRNode *node)
  */
 static bool create_leaf(MMRTracker *tracker, const uint8_t *e, size_t n, MMRNode **leaf)
 {
-    if (!e || n < 1) return false;
+    if (!tracker || !leaf || !e || n < 1) return false;
 
     MMRNode *node = malloc(sizeof(MMRNode));
     if (!node) return false;
@@ -275,8 +276,8 @@ static bool create_leaf(MMRTracker *tracker, const uint8_t *e, size_t n, MMRNode
 
 /**
  * Merge two nodes of equal size into a parent node
- * @param left 
- * @param right 
+ * @param left
+ * @param right
  * @param parent
  * @return true on success, false on failure
  */
@@ -451,7 +452,7 @@ bool mmr_verify(const MMRAccumulator *acc, const MMRWitness *w)
  */
 bool mmr_witness(const MMRAccumulator *acc, MMRWitness *w, const uint8_t *e, size_t n)
 {
-    if (!acc || !e || n < 1) return false;
+    if (!acc || !w || !e || n < 1) return false;
 
     bytes32 hash;
     if (!sha256(e, n, &hash)) return false;
@@ -463,17 +464,11 @@ bool mmr_witness(const MMRAccumulator *acc, MMRWitness *w, const uint8_t *e, siz
     }
 
     // TODO Cache and re-use unchanged witnesses
-    // if (item->witness.siblings) 
+    // if (item->witness.siblings)
     // {
     // }
 
     MMRNode *node = item->node;
-
-    if (w->siblings)
-    {
-        free(w->siblings);
-        w->siblings = NULL;
-    }
 
     memset(w, 0, sizeof(MMRWitness));
 
@@ -502,19 +497,19 @@ bool mmr_witness(const MMRAccumulator *acc, MMRWitness *w, const uint8_t *e, siz
         {
             sibling = parent->left;
         }
-        else 
+        else
         {
             free(siblings);
             return false;
         }
 
-        memcpy(siblings[level], sibling->hash, SHA256_DIGEST_LENGTH);
+        memcpy(siblings[level], sibling->hash, sizeof(bytes32));
 
         node = parent;
         ++level;
     }
 
-    memcpy(w->hash, hash, SHA256_DIGEST_LENGTH);
+    memcpy(w->hash, hash, sizeof(bytes32));
     w->n_siblings = level;
     w->path = path;
 
@@ -533,6 +528,7 @@ bool mmr_witness(const MMRAccumulator *acc, MMRWitness *w, const uint8_t *e, siz
     }
 
     w->siblings = siblings;
+    item->witness = *w;
 
     return true;
 }
