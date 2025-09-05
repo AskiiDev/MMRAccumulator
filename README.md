@@ -14,7 +14,7 @@ I built this primarily as an educational tool - both for myself and others wanti
 
 ## How does an MMR work?
 
-Merkle Mountain Range is essentially a forest of perfect binary trees. When you add elements:
+A Merkle Mountain Range is essentially a forest of perfect binary trees. When you add elements:
 
 1. Each element becomes a leaf node (tree of size 1)
 2. Adjacent trees of the same size merge into a larger tree
