@@ -81,7 +81,7 @@ typedef struct
 
 /**
  * Merkle Mountain Range accumulator for incremental set membership proofs
- * Maintains a forest of perfect binary trees in decreasing size order
+ * Maintains a forest of perfect binary trees
  * Supports efficient addition of elements and generation of inclusion proofs
  *
  * MEMORY MODEL:
