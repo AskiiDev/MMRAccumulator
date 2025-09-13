@@ -578,7 +578,7 @@ bool mmr_witness(const MMRAccumulator *acc, MMRWitness *w, const uint8_t *e, siz
         return false;
     }
 
-    // TODO Cache and re-use unchanged witnesses
+    // Cache and re-use unchanged witnesses
     if (item->witness_root && mmr_tr_has_root(acc, &item->witness_root->hash))
     {
         *w = item->witness;
