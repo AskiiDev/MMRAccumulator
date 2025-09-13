@@ -53,7 +53,9 @@ typedef struct
 typedef struct MMRItem
 {
     MMRNode *node;
+
     MMRWitness witness;
+    MMRNode *witness_root;
 
     struct MMRItem *next;
 } MMRItem;

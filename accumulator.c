@@ -306,6 +306,8 @@ static bool mmr_tr_insert(MMRTracker *tracker, MMRNode *node)
 
     item->node = node;
     item->next = NULL;
+    item->witness_root = NULL;
+
     memset(&item->witness, 0, sizeof(MMRWitness));
     item->witness.siblings = NULL;
 
@@ -577,9 +579,11 @@ bool mmr_witness(const MMRAccumulator *acc, MMRWitness *w, const uint8_t *e, siz
     }
 
     // TODO Cache and re-use unchanged witnesses
-    // if (item->witness.siblings)
-    // {
-    // }
+    if (item->witness_root && mmr_tr_has_root(acc, &item->witness_root->hash))
+    {
+        *w = item->witness;
+        return true;
+    }
 
     MMRNode *node = item->node;
 
@@ -662,6 +666,7 @@ bool mmr_witness(const MMRAccumulator *acc, MMRWitness *w, const uint8_t *e, siz
     }
 
     item->witness = *w;
+    item->witness_root = node;
 
     return true;
 }
