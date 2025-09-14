@@ -589,7 +589,7 @@ bool mmr_witness(const MMRAccumulator *acc, MMRWitness *w, const uint8_t *e, siz
 
     memset(w, 0, sizeof(MMRWitness));
 
-    size_t path = 0;
+    uint64_t path = 0;
     size_t level = 0;
 
     // Allocate maximum possible space for sibling hashes
