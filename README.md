@@ -1,4 +1,4 @@
-# MMR Accumulator (In Progress)
+# libmmr (In Progress)
 
 A C implementation of a Merkle Mountain Range (MMR) accumulator for cryptographic set operations.
 
