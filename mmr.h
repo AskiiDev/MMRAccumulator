@@ -2,6 +2,7 @@
 #define MERKLE_ACCUMULATOR_H
 
 #include <openssl/sha.h>
+#include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
 
@@ -38,10 +39,14 @@ typedef struct MMRNode
 typedef struct
 {
     bytes32 hash;
-
     bytes32 *siblings;
-    size_t n_siblings;
+    
     uint64_t path;
+    uint16_t n_siblings;
+
+    // Possibly better memory 
+    // alignment to be found here
+
 } MMRWitness;
 
 // -------------------------- MMR TRACKER -----------------------------------

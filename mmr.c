@@ -1,4 +1,5 @@
-#include "accumulator.h"
+#include "mmr.h"
+#include <endian.h>
 #include <openssl/sha.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -214,7 +215,7 @@ static bool mmr_tr_get(const MMRTracker *tracker, const bytes32 *hash, MMRItem *
 {
     if (!item) return false;
     *item = NULL;
-    
+
     if (!tracker || !tracker->items) return false;
 
     MMRItem *cur = tracker->items[mmr_tr_hash(hash, tracker->capacity)];
@@ -498,12 +499,45 @@ bool mmr_add(MMRAccumulator *acc, const uint8_t *e, size_t n)
  * @param w Witness for element removal
  * @return true on success, false on failure
  */
-// bool mmr_remove(MMRAccumulator *acc, const MMRWitness *w)
-// {
-//     if (!acc || !w) return false;
-//
-//     return false;
-// }
+bool mmr_remove(MMRAccumulator *acc, const MMRWitness *w)
+{
+    if (!acc || !w) return false;
+    if (!mmr_verify(acc, w)) return false;
+
+    if (mmr_tr_has_root(acc, &w->hash)) 
+    {
+        MMRItem *root;
+        if (mmr_tr_get(&acc->tracker, &w->hash, &root))
+        {
+            return false;
+        }
+
+        root->witness.n_siblings = 0;
+        root->witness.path = 0;
+        if (root->witness.siblings)
+        {
+            free(root->witness.siblings);
+            root->witness.siblings = NULL;
+        }
+
+        memset(root->witness.hash, 0, sizeof(bytes32));
+
+        memset(root->witness_root, 0, sizeof(bytes32));
+        memset(root->node->hash, 0, sizeof(bytes32));
+
+        return true;
+    }
+
+    bytes32 hash;
+    memcpy(hash, w->hash, sizeof(bytes32));
+
+    for (uint16_t i = 1; i < w->n_siblings; ++i)
+    {
+
+    }
+
+    return false;
+}
 
 /**
  * Verify witness against MMR accumulator
@@ -521,10 +555,10 @@ bool mmr_verify(const MMRAccumulator *acc, const MMRWitness *w)
     if (w->path >= (1ULL << w->n_siblings)) return false;
 
     bytes32 hash;
-    memcpy(hash, w->hash, SHA256_DIGEST_LENGTH);
+    memcpy(hash, w->hash, sizeof(bytes32));
 
     // Reconstruct the root hash by following the witness path
-    for (size_t i = 0; i < w->n_siblings; ++i)
+    for (uint16_t i = 0; i < w->n_siblings; ++i)
     {
         // Extract the bit at position i to determine sibling order
         int sibling_order = (w->path >> i) & 1;
@@ -590,7 +624,7 @@ bool mmr_witness(const MMRAccumulator *acc, MMRWitness *w, const uint8_t *e, siz
     memset(w, 0, sizeof(MMRWitness));
 
     uint64_t path = 0;
-    size_t level = 0;
+    uint16_t level = 0;
 
     // Allocate maximum possible space for sibling hashes
     bytes32 *siblings = calloc(WITNESS_MAX_SIBLINGS, sizeof(bytes32));
