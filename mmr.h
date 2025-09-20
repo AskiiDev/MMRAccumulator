@@ -2,8 +2,8 @@
 #define MERKLE_ACCUMULATOR_H
 
 #include <openssl/sha.h>
-#include <stdio.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <string.h>
 
 // ---------------------------- HASHING -------------------------------------
@@ -40,11 +40,11 @@ typedef struct
 {
     bytes32 hash;
     bytes32 *siblings;
-    
+
     uint64_t path;
     uint16_t n_siblings;
 
-    // Possibly better memory 
+    // Possibly better memory
     // alignment to be found here
 
 } MMRWitness;

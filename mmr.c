@@ -499,45 +499,11 @@ bool mmr_add(MMRAccumulator *acc, const uint8_t *e, size_t n)
  * @param w Witness for element removal
  * @return true on success, false on failure
  */
-bool mmr_remove(MMRAccumulator *acc, const MMRWitness *w)
-{
-    if (!acc || !w) return false;
-    if (!mmr_verify(acc, w)) return false;
-
-    if (mmr_tr_has_root(acc, &w->hash)) 
-    {
-        MMRItem *root;
-        if (mmr_tr_get(&acc->tracker, &w->hash, &root))
-        {
-            return false;
-        }
-
-        root->witness.n_siblings = 0;
-        root->witness.path = 0;
-        if (root->witness.siblings)
-        {
-            free(root->witness.siblings);
-            root->witness.siblings = NULL;
-        }
-
-        memset(root->witness.hash, 0, sizeof(bytes32));
-
-        memset(root->witness_root, 0, sizeof(bytes32));
-        memset(root->node->hash, 0, sizeof(bytes32));
-
-        return true;
-    }
-
-    bytes32 hash;
-    memcpy(hash, w->hash, sizeof(bytes32));
-
-    for (uint16_t i = 1; i < w->n_siblings; ++i)
-    {
-
-    }
-
-    return false;
-}
+// bool mmr_remove(MMRAccumulator *acc, const MMRWitness *w)
+// {
+//     if (!acc || !w) return false;
+//     return false;
+// }
 
 /**
  * Verify witness against MMR accumulator
