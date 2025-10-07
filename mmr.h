@@ -157,7 +157,9 @@ bool mmr_verify(const MMRAccumulator *acc, const MMRWitness *w);
  * the path from the element's leaf node to a root node
  * MEMORY OWNERSHIP: The generated witness contains a siblings array that is
  * owned by the tracker - caller must NOT free w->siblings manually
- * The siblings array remains valid until mmr_destroy() is called
+ * The siblings array is invalidated if mmr_witness() is called again
+ * after accumulator roots have updated. Do not re-use witnesses after
+ * changing the accumulator state - assume they are invalid
  * @param acc Pointer to accumulator containing the element
  * @param w Witness structure to populate with proof data
  * @param e Element data to create witness for
